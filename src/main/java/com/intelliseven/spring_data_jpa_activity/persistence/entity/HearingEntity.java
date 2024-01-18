@@ -17,12 +17,12 @@ import lombok.NoArgsConstructor;
 @Table(name = "hearings")
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Data
+@Builder
 public class HearingEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+  private Long id;
 
   @Column
   private String caseName;

@@ -8,6 +8,8 @@ import com.intelliseven.spring_data_jpa_activity.presentation.dto.HearingDto;
 import com.intelliseven.spring_data_jpa_activity.service.HearingService;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -24,10 +26,10 @@ public class HearingController {
   }
 
   @PostMapping(path = "/hearings")
-  public HearingDto creatHearing(@RequestBody HearingDto hearing) {
+  public ResponseEntity<HearingDto> creatHearing(@RequestBody HearingDto hearing) {
     HearingEntity hearingEntity = hearingMapper.mapFrom(hearing);
     HearingEntity savedHearingEntity = hearingService.createHearing(hearingEntity);
-    return hearingMapper.mapTo(savedHearingEntity);
+    return new ResponseEntity<>(hearingMapper.mapTo(savedHearingEntity), HttpStatus.CREATED);
   }
 
 }

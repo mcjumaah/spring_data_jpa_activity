@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class HearingDto {
-  private long id;
+  private Long id;
 
   private String caseName;
   private LocalDate date;
