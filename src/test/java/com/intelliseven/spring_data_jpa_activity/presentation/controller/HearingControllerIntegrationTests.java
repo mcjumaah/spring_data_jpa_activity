@@ -36,7 +36,7 @@ public class HearingControllerIntegrationTests {
   }
 
   @Test
-  public void testThatCreateHearingSuccessfullyReturnsHttp201Created() throws Exception {
+  public void testThatCreateHearingReturnsHttp201Created() throws Exception {
     HearingEntity testHearingEntityA = TestDataUtil.createTestHearingEntityA();
     testHearingEntityA.setId(null);
     String hearingJson = objectMapper.writeValueAsString(testHearingEntityA);
@@ -47,7 +47,7 @@ public class HearingControllerIntegrationTests {
   }
 
   @Test
-  public void testThatCreateHearingSuccessfullyReturnsSavedHearing() throws Exception {
+  public void testThatCreateHearingReturnsSavedHearing() throws Exception {
     HearingEntity testHearingEntityA = TestDataUtil.createTestHearingEntityA();
     testHearingEntityA.setId(null);
     String hearingJson = objectMapper.writeValueAsString(testHearingEntityA);
@@ -66,7 +66,7 @@ public class HearingControllerIntegrationTests {
   }
 
   @Test
-  public void testThatListHearingSuccessfullyReturnsHttp200() throws Exception {
+  public void testThatListHearingsReturnsHttp200() throws Exception {
     mockMvc
         .perform(
             MockMvcRequestBuilders.get("/api/hearings").contentType(MediaType.APPLICATION_JSON))
@@ -74,13 +74,14 @@ public class HearingControllerIntegrationTests {
   }
 
   @Test
-  public void testThatListHearingSuccessfullyReturnsListOfHearings() throws Exception {
+  public void testThatListHearingsReturnsListOfHearings() throws Exception {
     HearingEntity testHearingEntityA = TestDataUtil.createTestHearingEntityA();
     hearingService.createHearing(testHearingEntityA);
 
     mockMvc
         .perform(
             MockMvcRequestBuilders.get("/api/hearings").contentType(MediaType.APPLICATION_JSON))
+        .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").isNumber())
         .andExpect(MockMvcResultMatchers.jsonPath("$[0].caseName")
             .value("Test Case Name vs. Pipol of da Pelepens"))
         .andExpect(MockMvcResultMatchers.jsonPath("$[0].date").value("2000-08-18"))
@@ -88,6 +89,44 @@ public class HearingControllerIntegrationTests {
         .andExpect(MockMvcResultMatchers.jsonPath("$[0].incident")
             .value("Sample test incident naman ngaya"))
         .andExpect(MockMvcResultMatchers.jsonPath("$[0].proceeding")
+            .value("Tas test proceeding man kuno ading usad"));
+  }
+
+  @Test
+  public void testThatGetHearingReturnsHttp200WhenHearingExists() throws Exception {
+    HearingEntity testHearingEntityA = TestDataUtil.createTestHearingEntityA();
+    hearingService.createHearing(testHearingEntityA);
+
+    mockMvc
+        .perform(
+            MockMvcRequestBuilders.get("/api/hearings/1").contentType(MediaType.APPLICATION_JSON))
+        .andExpect(MockMvcResultMatchers.status().isOk());
+  }
+
+  @Test
+  public void testThatGetHearingReturnsHttp404WhenNoHearingExists() throws Exception {
+    mockMvc
+        .perform(
+            MockMvcRequestBuilders.get("/api/hearings/99").contentType(MediaType.APPLICATION_JSON))
+        .andExpect(MockMvcResultMatchers.status().isNotFound());
+  }
+
+  @Test
+  public void testThatGetHearingReturnsHearingWhenHearingExists() throws Exception {
+    HearingEntity testHearingEntityA = TestDataUtil.createTestHearingEntityA();
+    hearingService.createHearing(testHearingEntityA);
+
+    mockMvc
+        .perform(
+            MockMvcRequestBuilders.get("/api/hearings/1").contentType(MediaType.APPLICATION_JSON))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.caseName")
+            .value("Test Case Name vs. Pipol of da Pelepens"))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.date").value("2000-08-18"))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("PROCEED"))
+        .andExpect(
+            MockMvcResultMatchers.jsonPath("$.incident").value("Sample test incident naman ngaya"))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.proceeding")
             .value("Tas test proceeding man kuno ading usad"));
   }
 }
