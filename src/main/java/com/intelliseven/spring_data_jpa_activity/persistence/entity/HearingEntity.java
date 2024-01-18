@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,8 +17,9 @@ import lombok.NoArgsConstructor;
 @Table(name = "hearings")
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Data
-public class Hearing {
+public class HearingEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
@@ -33,7 +35,7 @@ public class Hearing {
   @Column
   private String proceeding;
 
-  public Hearing(String caseName, LocalDate date, String status, String incident, String proceeding) {
+  public HearingEntity(String caseName, LocalDate date, String status, String incident, String proceeding) {
     this.caseName = caseName;
     this.date = date;
     this.status = status;
