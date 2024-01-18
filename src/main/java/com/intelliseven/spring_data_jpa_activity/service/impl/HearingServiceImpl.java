@@ -1,5 +1,9 @@
 package com.intelliseven.spring_data_jpa_activity.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 import org.springframework.stereotype.Service;
 
 import com.intelliseven.spring_data_jpa_activity.persistence.entity.HearingEntity;
@@ -18,6 +22,12 @@ public class HearingServiceImpl implements HearingService {
   @Override
   public HearingEntity createHearing(HearingEntity hearingEntity) {
     return hearingRepo.save(hearingEntity);
+  }
+
+  @Override
+  public List<HearingEntity> findAll() {
+    return StreamSupport.stream(hearingRepo.findAll().spliterator(), false)
+        .collect(Collectors.toList());
   }
 
 }
