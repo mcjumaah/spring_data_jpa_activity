@@ -12,4 +12,6 @@ public interface HearingService {
   Optional<HearingEntity> findOne(Long id);
 
   boolean isExists(Long id);
+
+  HearingEntity partialUpdate(Long id, HearingEntity hearingEntity);
 }
