@@ -14,4 +14,6 @@ public interface HearingService {
   boolean isExists(Long id);
 
   HearingEntity partialUpdate(Long id, HearingEntity hearingEntity);
+
+  void delete(Long id);
 }

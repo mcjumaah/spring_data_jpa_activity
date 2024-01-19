@@ -236,4 +236,24 @@ public class HearingControllerIntegrationTests {
         .andExpect(
             MockMvcResultMatchers.jsonPath("$.proceeding").value(testHearingDtoB.getProceeding()));
   }
+
+  @Test
+  public void testThatDeleteHearingReturnsHttp404WhenNoHearingExists() throws Exception {
+    mockMvc
+        .perform(MockMvcRequestBuilders.delete("/api/hearings/99")
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(MockMvcResultMatchers.status().isNotFound());
+  }
+
+  @Test
+  public void testThatDeleteHearingReturnsHttp204WhenHearingExists() throws Exception {
+    HearingEntity testHearingEntityA = TestDataUtil.createTestHearingEntityA();
+    HearingEntity savedHearing = hearingService.save(testHearingEntityA);
+
+    mockMvc
+        .perform(MockMvcRequestBuilders.delete("/api/hearings/" + savedHearing.getId())
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(MockMvcResultMatchers.status().isNoContent());
+  }
+
 }

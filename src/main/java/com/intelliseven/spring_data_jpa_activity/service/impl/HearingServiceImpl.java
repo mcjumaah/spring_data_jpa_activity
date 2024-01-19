@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-import org.springframework.boot.env.ConfigTreePropertySource.Option;
 import org.springframework.stereotype.Service;
 
 import com.intelliseven.spring_data_jpa_activity.persistence.entity.HearingEntity;
@@ -53,5 +52,10 @@ public class HearingServiceImpl implements HearingService {
       Optional.ofNullable(hearingEntity.getProceeding()).ifPresent(existingHearing::setProceeding);
       return hearingRepo.save(existingHearing);
     }).orElseThrow(() -> new RuntimeException("Hearing does not exist"));
+  }
+
+  @Override
+  public void delete(Long id) {
+    hearingRepo.deleteById(id);
   }
 }
