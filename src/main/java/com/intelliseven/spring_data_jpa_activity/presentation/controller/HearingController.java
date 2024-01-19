@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 @RestController
 @RequestMapping(path = "/api")
@@ -36,7 +38,7 @@ public class HearingController {
   @PostMapping(path = "/hearings")
   public ResponseEntity<HearingDto> creatHearing(@RequestBody HearingDto hearing) {
     HearingEntity hearingEntity = hearingMapper.mapFrom(hearing);
-    HearingEntity savedHearingEntity = hearingService.createHearing(hearingEntity);
+    HearingEntity savedHearingEntity = hearingService.save(hearingEntity);
     return new ResponseEntity<>(hearingMapper.mapTo(savedHearingEntity), HttpStatus.CREATED);
   }
 
@@ -53,6 +55,18 @@ public class HearingController {
       HearingDto hearingDto = hearingMapper.mapTo(hearingEntity);
       return new ResponseEntity<>(hearingDto, HttpStatus.OK);
     }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+  }
+
+  @PutMapping("/hearings/{id}")
+  public ResponseEntity<HearingDto> fullUpdateHearing(@PathVariable("id") Long id,
+      @RequestBody HearingDto hearingDto) {
+    if (!hearingService.isExists(id)) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    hearingDto.setId(id);
+    HearingEntity hearingEntity = hearingMapper.mapFrom(hearingDto);
+    HearingEntity savedHearingEntity = hearingService.save(hearingEntity);
+    return new ResponseEntity<>(hearingMapper.mapTo(savedHearingEntity), HttpStatus.OK);
   }
 
 }

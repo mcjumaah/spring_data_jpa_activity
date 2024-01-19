@@ -21,7 +21,7 @@ public class HearingServiceImpl implements HearingService {
   }
 
   @Override
-  public HearingEntity createHearing(HearingEntity hearingEntity) {
+  public HearingEntity save(HearingEntity hearingEntity) {
     return hearingRepo.save(hearingEntity);
   }
 
@@ -34,6 +34,11 @@ public class HearingServiceImpl implements HearingService {
   @Override
   public Optional<HearingEntity> findOne(Long id) {
     return hearingRepo.findById(id);
+  }
+
+  @Override
+  public boolean isExists(Long id) {
+    return hearingRepo.existsById(id);
   }
 
 }
