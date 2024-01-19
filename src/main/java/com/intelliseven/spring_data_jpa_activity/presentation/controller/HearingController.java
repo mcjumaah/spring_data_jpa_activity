@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,9 +46,9 @@ public class HearingController {
   }
 
   @GetMapping("/hearings")
-  public List<HearingDto> listHearings() {
-    List<HearingEntity> hearings = hearingService.findAll();
-    return hearings.stream().map(hearingMapper::mapTo).collect(Collectors.toList());
+  public Page<HearingDto> listHearings(Pageable pageable) {
+    Page<HearingEntity> hearings = hearingService.findAll(pageable);
+    return hearings.map(hearingMapper::mapTo);
   }
 
   @GetMapping("/hearings/{id}")

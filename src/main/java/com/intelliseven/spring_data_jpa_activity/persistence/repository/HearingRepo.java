@@ -7,5 +7,4 @@ import com.intelliseven.spring_data_jpa_activity.persistence.entity.HearingEntit
 
 @Repository
 public interface HearingRepo extends JpaRepository<HearingEntity, Long> {
-
 }
