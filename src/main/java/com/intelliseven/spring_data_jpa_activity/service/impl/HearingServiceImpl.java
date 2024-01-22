@@ -82,7 +82,11 @@ public class HearingServiceImpl implements HearingService {
   }
 
   @Override
-  public void delete(Long id) {
+  public ResponseEntity<?> deleteHearing(Long id) {
+    if (!hearingRepo.existsById(id)) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
     hearingRepo.deleteById(id);
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 }

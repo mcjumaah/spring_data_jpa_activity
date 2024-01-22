@@ -16,5 +16,5 @@ public interface HearingService {
 
   ResponseEntity<HearingDto> partialUpdateHearing(Long id, HearingDto hearingDtoRequest);
 
-  void delete(Long id);
+  ResponseEntity<?> deleteHearing(Long id);
 }
