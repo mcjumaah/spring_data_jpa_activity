@@ -6,7 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import com.intelliseven.spring_data_jpa_activity.persistence.entity.HearingEntity;
 import com.intelliseven.spring_data_jpa_activity.persistence.mapper.Mapper;
 import com.intelliseven.spring_data_jpa_activity.persistence.repository.HearingRepo;
@@ -48,8 +47,14 @@ public class HearingServiceImpl implements HearingService {
   }
 
   @Override
-  public boolean isExists(Long id) {
-    return hearingRepo.existsById(id);
+  public ResponseEntity<HearingDto> fullUpdateHearing(Long id, HearingDto hearingDtoRequest) {
+    if (!hearingRepo.existsById(id)) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    hearingDtoRequest.setId(id);
+    HearingEntity hearingEntity = hearingMapper.mapFrom(hearingDtoRequest);
+    HearingEntity savedHearingEntity = hearingRepo.save(hearingEntity);
+    return new ResponseEntity<>(hearingMapper.mapTo(savedHearingEntity), HttpStatus.OK);
   }
 
   @Override
