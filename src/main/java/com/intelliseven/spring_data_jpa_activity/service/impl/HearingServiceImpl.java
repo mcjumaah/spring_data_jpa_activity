@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.bind.annotation.PathVariable;
 import com.intelliseven.spring_data_jpa_activity.persistence.entity.HearingEntity;
 import com.intelliseven.spring_data_jpa_activity.persistence.mapper.Mapper;
 import com.intelliseven.spring_data_jpa_activity.persistence.repository.HearingRepo;
@@ -39,8 +39,12 @@ public class HearingServiceImpl implements HearingService {
   }
 
   @Override
-  public Optional<HearingEntity> findOne(Long id) {
-    return hearingRepo.findById(id);
+  public ResponseEntity<HearingDto> getHearing(Long id) {
+    Optional<HearingEntity> foundHearing = hearingRepo.findById(id);
+    return foundHearing.map(hearingEntity -> {
+      HearingDto hearingDto = hearingMapper.mapTo(hearingEntity);
+      return new ResponseEntity<>(hearingDto, HttpStatus.OK);
+    }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
   @Override

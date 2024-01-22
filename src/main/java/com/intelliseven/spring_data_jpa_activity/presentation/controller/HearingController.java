@@ -47,11 +47,7 @@ public class HearingController {
 
   @GetMapping("/hearings/{id}")
   public ResponseEntity<HearingDto> getHearing(@PathVariable("id") Long id) {
-    Optional<HearingEntity> foundHearing = hearingService.findOne(id);
-    return foundHearing.map(hearingEntity -> {
-      HearingDto hearingDto = hearingMapper.mapTo(hearingEntity);
-      return new ResponseEntity<>(hearingDto, HttpStatus.OK);
-    }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    return hearingService.getHearing(id);
   }
 
   // @PutMapping("/hearings/{id}")
