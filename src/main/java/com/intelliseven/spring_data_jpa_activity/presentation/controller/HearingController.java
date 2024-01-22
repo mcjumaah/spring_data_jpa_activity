@@ -9,9 +9,7 @@ import com.intelliseven.spring_data_jpa_activity.service.HearingService;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 
 
 @RestController
@@ -39,16 +36,13 @@ public class HearingController {
   }
 
   @PostMapping("/hearings")
-  public ResponseEntity<HearingDto> creatHearing(@RequestBody HearingDto hearing) {
-    HearingEntity hearingEntity = hearingMapper.mapFrom(hearing);
-    HearingEntity savedHearingEntity = hearingService.save(hearingEntity);
-    return new ResponseEntity<>(hearingMapper.mapTo(savedHearingEntity), HttpStatus.CREATED);
+  public ResponseEntity<HearingDto> creatHearing(@RequestBody HearingDto hearingDtoRequest) {
+    return hearingService.createHearing(hearingDtoRequest);
   }
 
   @GetMapping("/hearings")
   public Page<HearingDto> listHearings(Pageable pageable) {
-    Page<HearingEntity> hearings = hearingService.findAll(pageable);
-    return hearings.map(hearingMapper::mapTo);
+    return hearingService.listHearings(pageable);
   }
 
   @GetMapping("/hearings/{id}")
@@ -60,18 +54,18 @@ public class HearingController {
     }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
-  @PutMapping("/hearings/{id}")
-  public ResponseEntity<HearingDto> fullUpdateHearing(@PathVariable("id") Long id,
-      @RequestBody HearingDto hearingDto) {
+  // @PutMapping("/hearings/{id}")
+  // public ResponseEntity<HearingDto> fullUpdateHearing(@PathVariable("id") Long id,
+  // @RequestBody HearingDto hearingDto) {
 
-    if (!hearingService.isExists(id)) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-    hearingDto.setId(id);
-    HearingEntity hearingEntity = hearingMapper.mapFrom(hearingDto);
-    HearingEntity savedHearingEntity = hearingService.save(hearingEntity);
-    return new ResponseEntity<>(hearingMapper.mapTo(savedHearingEntity), HttpStatus.OK);
-  }
+  // if (!hearingService.isExists(id)) {
+  // return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+  // }
+  // hearingDto.setId(id);
+  // HearingEntity hearingEntity = hearingMapper.mapFrom(hearingDto);
+  // HearingEntity savedHearingEntity = hearingService.save(hearingEntity);
+  // return new ResponseEntity<>(hearingMapper.mapTo(savedHearingEntity), HttpStatus.OK);
+  // }
 
   @PatchMapping("/hearings/{id}")
   public ResponseEntity<HearingDto> partialUpdateHearing(@PathVariable("id") Long id,

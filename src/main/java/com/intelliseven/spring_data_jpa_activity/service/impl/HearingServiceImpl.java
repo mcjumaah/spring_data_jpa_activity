@@ -1,40 +1,41 @@
 package com.intelliseven.spring_data_jpa_activity.service.impl;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.intelliseven.spring_data_jpa_activity.persistence.entity.HearingEntity;
+import com.intelliseven.spring_data_jpa_activity.persistence.mapper.Mapper;
 import com.intelliseven.spring_data_jpa_activity.persistence.repository.HearingRepo;
+import com.intelliseven.spring_data_jpa_activity.presentation.dto.HearingDto;
 import com.intelliseven.spring_data_jpa_activity.service.HearingService;
 
 @Service
 public class HearingServiceImpl implements HearingService {
 
   private HearingRepo hearingRepo;
+  private Mapper<HearingEntity, HearingDto> hearingMapper;
 
-  public HearingServiceImpl(HearingRepo hearingRepo) {
+  public HearingServiceImpl(HearingRepo hearingRepo,
+      Mapper<HearingEntity, HearingDto> hearingMapper) {
     this.hearingRepo = hearingRepo;
+    this.hearingMapper = hearingMapper;
   }
 
   @Override
-  public HearingEntity save(HearingEntity hearingEntity) {
-    return hearingRepo.save(hearingEntity);
+  public ResponseEntity<HearingDto> createHearing(HearingDto hearingDtoRequest) {
+    HearingEntity hearingEntity = hearingMapper.mapFrom(hearingDtoRequest);
+    HearingEntity savedHearingEntity = hearingRepo.save(hearingEntity);
+    return new ResponseEntity<>(hearingMapper.mapTo(savedHearingEntity), HttpStatus.CREATED);
   }
 
   @Override
-  public List<HearingEntity> findAll() {
-    return StreamSupport.stream(hearingRepo.findAll().spliterator(), false)
-        .collect(Collectors.toList());
-  }
-
-  @Override
-  public Page<HearingEntity> findAll(Pageable pageable) {
-    return hearingRepo.findAll(pageable);
+  public Page<HearingDto> listHearings(Pageable pageable) {
+    Page<HearingEntity> hearings = hearingRepo.findAll(pageable);
+    return hearings.map(hearingMapper::mapTo);
   }
 
   @Override

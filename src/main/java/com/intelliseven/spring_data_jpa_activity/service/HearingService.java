@@ -1,17 +1,16 @@
 package com.intelliseven.spring_data_jpa_activity.service;
 
-import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import com.intelliseven.spring_data_jpa_activity.persistence.entity.HearingEntity;
+import com.intelliseven.spring_data_jpa_activity.presentation.dto.HearingDto;
 
 public interface HearingService {
-  HearingEntity save(HearingEntity hearing);
+  ResponseEntity<HearingDto> createHearing(HearingDto hearingDtoRequest);
 
-  List<HearingEntity> findAll();
-
-  Page<HearingEntity> findAll(Pageable pageable);
+  Page<HearingDto> listHearings(Pageable pageable);
 
   Optional<HearingEntity> findOne(Long id);
 
