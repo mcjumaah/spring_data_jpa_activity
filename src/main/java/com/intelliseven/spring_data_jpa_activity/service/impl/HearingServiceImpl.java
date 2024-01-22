@@ -58,17 +58,27 @@ public class HearingServiceImpl implements HearingService {
   }
 
   @Override
-  public HearingEntity partialUpdate(Long id, HearingEntity hearingEntity) {
-    hearingEntity.setId(id);
+  public ResponseEntity<HearingDto> partialUpdateHearing(Long id, HearingDto hearingDtoRequest) {
+    if (!hearingRepo.existsById(id)) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 
-    return hearingRepo.findById(id).map(existingHearing -> {
-      Optional.ofNullable(hearingEntity.getCaseName()).ifPresent(existingHearing::setCaseName);
-      Optional.ofNullable(hearingEntity.getDate()).ifPresent(existingHearing::setDate);
-      Optional.ofNullable(hearingEntity.getStatus()).ifPresent(existingHearing::setStatus);
-      Optional.ofNullable(hearingEntity.getIncident()).ifPresent(existingHearing::setIncident);
-      Optional.ofNullable(hearingEntity.getProceeding()).ifPresent(existingHearing::setProceeding);
+    HearingEntity hearingEntityRequest = hearingMapper.mapFrom(hearingDtoRequest);
+    hearingEntityRequest.setId(id);
+
+    HearingEntity updatedHearingEntity = hearingRepo.findById(id).map(existingHearing -> {
+      Optional.ofNullable(hearingEntityRequest.getCaseName())
+          .ifPresent(existingHearing::setCaseName);
+      Optional.ofNullable(hearingEntityRequest.getDate()).ifPresent(existingHearing::setDate);
+      Optional.ofNullable(hearingEntityRequest.getStatus()).ifPresent(existingHearing::setStatus);
+      Optional.ofNullable(hearingEntityRequest.getIncident())
+          .ifPresent(existingHearing::setIncident);
+      Optional.ofNullable(hearingEntityRequest.getProceeding())
+          .ifPresent(existingHearing::setProceeding);
       return hearingRepo.save(existingHearing);
     }).orElseThrow(() -> new RuntimeException("Hearing does not exist"));
+
+    return new ResponseEntity<>(hearingMapper.mapTo(updatedHearingEntity), HttpStatus.OK);
   }
 
   @Override
